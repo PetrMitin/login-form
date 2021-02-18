@@ -52,10 +52,10 @@ app.get("/api/", async (req, res, next) => {
 app.post('/api/', async (req, res, next) => {
     try { 
         const newUser = req.body.user
-        newUser.password = await bcrypt.hash(newUser.password, 13)
         if (await isUsernameInDb(newUser.username) === true || !newUser.username || !newUser.password) {
             return  res.status(400).json({message: 'Имя пользователя должно быть уникальным, оно не должно быть пустой строкой, как и пароль.'})
         }
+        newUser.password = await bcrypt.hash(newUser.password, 13)
         const createdUser = await User.create(newUser)
         res.status(201).send({user: createdUser, token: signToken(createdUser.username)})
     } catch(err) {
